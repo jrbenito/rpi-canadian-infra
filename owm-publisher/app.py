@@ -25,7 +25,7 @@ class Weather(object):
         return w
 
 
-def main_loop(owm, mqtt_host, base_topic):
+def main_loop(owm, mqtt_host, base_topic, period):
     msgs = []
     while True:
         try:
@@ -55,7 +55,7 @@ def main_loop(owm, mqtt_host, base_topic):
                     msgs.append(msg)
 
         publish.multiple(msgs, hostname="mqtt", port=1883)
-        sleep(60)
+        sleep(period)
 
 
 if __name__ == '__main__':
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         # set objects
         try:
             config = ConfigObj("./config/owm-publisher.conf",
-                               configspec="./config/owm-configspec.ini")
+                               configspec="owm-configspec.ini")
             validator = Validator()
             config.validate(validator)
         except ConfigObjError:
@@ -72,7 +72,8 @@ if __name__ == '__main__':
         owm = Weather(config['OWMKEY'], float(config['OWMLAT']), float(config['OWMLON']))
 
         # run
-        main_loop(owm, config['MQTTHOST'], config['MQTTTOPIC'])
+        main_loop(owm, config['MQTTHOST'], config['MQTTTOPIC'],
+                  config['PERIOD'])
     except KeyboardInterrupt:
         print('\nExiting by user request.\n')
         sys.exit(0)
