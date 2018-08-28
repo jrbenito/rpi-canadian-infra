@@ -1,0 +1,9 @@
+# Register at pvoutput.org to get your SYSTEMID and APIKEY
+SYSTEMID=<pvoutput systemID>
+APIKEY=<pvoutput apikey>
+# Set your timezone string so pytz can grab your localtime inside docker
+TimeZone=America/Sao_Paulo
+#MQTTHOST=<hostname of mqtt broker, leave commented for docker-compose>
+#[topic]
+#TEMP = string(default='weather/temperature/temp')
+#SOLAR = string(default='solar/#')
