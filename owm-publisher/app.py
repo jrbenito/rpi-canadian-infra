@@ -1,8 +1,10 @@
 import sys
+import json
 import paho.mqtt.publish as publish
 from time import sleep
 from configobj import ConfigObj
 from pyowm import OWM
+from pyowm.exceptions import OWMError
 
 
 class Weather(object):
@@ -30,12 +32,36 @@ class Weather(object):
 
 
 def main_loop(owm):
+    base_topic = 'weather'
+    msgs = []
     while True:
-        print(owm.get().to_JSON())
+        try:
+            weather = owm.get()
+        except OWMError as err:
+            print("Error: ", err)
 
-        # msg = {'topic':"<topic>", 'payload':"<payload>", 'qos':<qos>, 'retain':<retain>}
-        # publish.multiple(msgs, hostname="mqtt", port=1883, client_id="", keepalive=60,
-        #         will=None, auth=None, tls=None, protocol=mqtt.MQTTv31)
+        json_data = json.loads(weather.to_JSON())
+
+        for key, value in json_data.items():
+            # hack for temperature in unit=Celsius
+            if key == 'temperature':
+                value = weather.get_temperature(unit='celsius')
+            # msg = {'topic':"<topic>", 'payload':"<payload>", 'qos':<qos>,
+            #  'retain':<retain>}
+            if not isinstance(value, dict):
+                msg = {}
+                msg['topic'] = base_topic + '/' + key
+                msg['payload'] = value
+                msgs.append(msg)
+            else:
+                chain_topic = base_topic + '/' + key
+                for key2, value2 in value.items():
+                    msg = {}
+                    msg['topic'] = chain_topic + '/' + key2
+                    msg['payload'] = value2
+                    msgs.append(msg)
+
+        publish.multiple(msgs, hostname="mqtt", port=1883)
         sleep(60)
 
 
