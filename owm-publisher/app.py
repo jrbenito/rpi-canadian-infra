@@ -11,9 +11,6 @@ class Weather(object):
     API = ''
     lat = 0.0
     lon = 0.0
-    temperature = 0.0
-    cloud_pct = 0
-    cmo_str = ''
 
     def __init__(self, API, lat, lon):
         self.API = API
@@ -24,10 +21,6 @@ class Weather(object):
     def get(self):
         obs = self.owm.weather_at_coords(self.lat, self.lon)
         w = obs.get_weather()
-        status = w.get_detailed_status()
-        self.temperature = w.get_temperature(unit='celsius')['temp']
-        self.cloud_pct = w.get_clouds()
-        self.cmo_str = ('%s with cloud coverage of %s percent' % (status, self.cloud_pct))
         return w
 
 
