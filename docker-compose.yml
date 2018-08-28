@@ -15,8 +15,8 @@ services:
     build: ./owm-publisher
     networks:
       - frontend
-#    volumes:
-#      - ./owm-publisher.conf:/app/config/owm-publisher.conf
+    volumes:
+      - ./owm-publisher-conf:/app/config
 
 networks:
   frontend:

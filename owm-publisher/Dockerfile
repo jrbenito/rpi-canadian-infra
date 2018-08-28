@@ -5,4 +5,6 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
+VOLUME ["/app/config"]
+
 CMD ["python", "./app.py"]
