@@ -1,0 +1,9 @@
+# Populate and uncomment below
+#OWMKEY=<put your key here - this is mandatory>
+#OWMLAT=<Latitude goes here, if not informed default to 0.0 ie. -22.345>
+#OWMLON=<Latitude goes here, if not informed default to 0.0 ie. 78.345>
+
+#PERIOD=<number of seconds between consults to OWM, defaults to 60s>
+
+#MQTTHOST=<hostname of MQTT server, defaults to 'mqtt' leave commented for docker-compose>
+#MQTTTOPIC=<base topic where to publish OWM info, defaults to 'weather'>
