@@ -2,7 +2,8 @@ import sys
 import json
 import paho.mqtt.publish as publish
 from time import sleep
-from configobj import ConfigObj
+from configobj import ConfigObj, ConfigObjError
+from validate import Validator
 from pyowm import OWM
 from pyowm.exceptions import OWMError
 
@@ -24,8 +25,7 @@ class Weather(object):
         return w
 
 
-def main_loop(owm):
-    base_topic = 'weather'
+def main_loop(owm, mqtt_host, base_topic):
     msgs = []
     while True:
         try:
@@ -61,11 +61,18 @@ def main_loop(owm):
 if __name__ == '__main__':
     try:
         # set objects
-        config = ConfigObj("./config/owm-publisher.conf")
+        try:
+            config = ConfigObj("./config/owm-publisher.conf",
+                               configspec="./config/owm-configspec.ini")
+            validator = Validator()
+            config.validate(validator)
+        except ConfigObjError:
+            print('Could not read config or configspec file', ConfigObjError)
+
         owm = Weather(config['OWMKEY'], float(config['OWMLAT']), float(config['OWMLON']))
 
         # run
-        main_loop(owm)
+        main_loop(owm, config['MQTTHOST'], config['MQTTTOPIC'])
     except KeyboardInterrupt:
         print('\nExiting by user request.\n')
         sys.exit(0)
