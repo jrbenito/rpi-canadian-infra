@@ -31,6 +31,7 @@ class MyMQTTClass(mqtt.Client):
 
 def main_loop():
     print('boilerplate')
+    # this boilerplate works for some seconds then exit
     sleep(600)
 
 
@@ -39,7 +40,7 @@ if __name__ == '__main__':
     # set objects
     try:
         config = ConfigObj("./config/pvoutput-publisher.conf",
-                            configspec="pvoutput-configspec.ini")
+                           configspec="pvoutput-configspec.ini")
         validator = Validator()
         config.validate(validator)
     except ConfigObjError:
@@ -47,20 +48,19 @@ if __name__ == '__main__':
 
     # MQTT Client and connection with topics
     mqttc = MyMQTTClass()
-    mqttc.run(config['MQTTHOST'],config['topics'].dict())
+    mqttc.run(config['MQTTHOST'], config['topics'].dict())
 
     try:
         # run
         main_loop()
-
-        # if we reach this point something went wrong so let's gracefully
-        # terminate mqtt client loop
-        print('Returned from main: stop client loop - this shall never happen')
-        mqttc.disconnect()
-        mqttc.loop_stop()
-
     except KeyboardInterrupt:
         mqttc.disconnect()
         mqttc.loop_stop()
         print('\nExiting by user request.\n')
         sys.exit(0)
+
+    # if we reach this point something went wrong so let's gracefully
+    # terminate mqtt client loop
+    print('Returned from main: stop client loop - this shall never happen')
+    mqttc.disconnect()
+    mqttc.loop_stop()
