@@ -14,12 +14,21 @@ services:
 
   owmpub:
     image: owmpub-app
-    build: ./owm-publisher
+    build: ./owmpub-app
     restart: always
     networks:
       - frontend
     volumes:
-      - ${PWD}/owm-publisher-conf/:/app/config/
+      - ${PWD}/owmpub-conf/:/app/config/
+
+  pvosub:
+    image: pvosub-app
+    build: ./pvosub-app
+    restart: always
+    networks:
+      - frontend
+    volumes:
+      - ${PWD}/pvosub-conf/:/app/config/
 
 networks:
   frontend:
