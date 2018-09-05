@@ -54,7 +54,7 @@ def main_loop(owm, mqtt_host, base_topic, period):
                     msg['payload'] = value2
                     msgs.append(msg)
 
-        publish.multiple(msgs, hostname="mqtt", port=1883)
+        publish.multiple(msgs, hostname="mqtt", port=1883, client_id="owmpub")
         sleep(period)
 
 

@@ -153,7 +153,7 @@ if __name__ == '__main__':
         return datetime.now(tz=timezone(config['TimeZone']))
 
     # MQTT Client and connection with topics
-    mqttc = MyMQTTClass()
+    mqttc = MyMQTTClass(client_id="pvosub")
     mqttc.run(config['MQTTHOST'], config['topics'].dict())
 
     # PVOutput poster
